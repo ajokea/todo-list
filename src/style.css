@@ -1,0 +1,183 @@
+* {
+    padding: 0;
+    margin: 0;
+    --PINK: rgb(224, 143, 224);
+    --HOVER-PINK: rgb(214, 174, 214);
+}
+
+body {
+    background-color: rgb(29, 29, 29);
+    height: 100vh;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    padding: 0 10vw;
+}
+
+h1 {
+    color: var(--PINK);
+}
+
+.todos > p {
+    font-size: 18px;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.lists > p {
+    font-size: 18px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.todos li {
+    display: flex;
+    align-items: flex-start;
+}
+
+#todos div:nth-child(2) {
+    margin-left: 15px;
+    margin-top: -5px;
+    margin-right: auto;
+}
+
+.todos li {
+    margin-top: 10px;
+}
+
+li {
+    list-style-type: none;
+}
+
+.lists, .todos {
+    background-color: rgb(136, 136, 136);
+    color: white;
+    height: 80vh;
+    border: none;
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.lists {
+    flex: 1 1 20vw;
+}
+
+.todos {
+    flex: 2 1 40vw;
+}
+
+#new-todo, #new-list {
+    background-color: var(--PINK);;
+    color: white;
+    font-size: 15px;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    align-self: flex-end;
+    margin-top: auto;
+}
+
+#new-todo:hover, #new-list:hover {
+    background-color: var(--HOVER-PINK);
+}
+
+.backdrop {
+    height: 100vh;
+    width: 100vw;
+    border-radius: 18px;
+    position: absolute;
+    right: 0;
+    background-color: rgba(255, 255, 255, 0);
+    backdrop-filter: blur(3px);
+}
+
+.list-popup {
+    position: fixed;
+    height: 150px;
+    width: 350px;
+    z-index: 1;
+    left: 38vw;
+    background-color: white;
+    border-radius: 10px;
+}
+
+.todo-popup {
+    position: fixed;
+    height: 650px;
+    width: 350px;
+    z-index: 1;
+    left: 38vw;
+    background-color: white;
+    border-radius: 10px;
+}
+
+#list-form {
+    height: 150px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    padding: 0 25px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+#todo-form {
+    height: 650px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 12px;
+    padding: 0 25px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.name, .title, .description, .due-date, .priority, .list {
+    display: flex;
+    flex-direction: column;
+}
+
+form input {
+    height: 20px;
+}
+
+form button {
+    font-size: 14px;
+    padding: 3px;
+}
+
+form div:last-child {
+    margin: 0 auto;
+}
+
+.lists > ul > div {
+    color: white;
+    list-style: none;
+    font-size: 20px;
+    padding: 12px 0;
+    border-bottom: white solid;
+    display: flex;
+}
+
+.lists > ul > div > li {
+    margin-right: auto;
+}
+
+.lists li:hover {
+    color: var(--PINK);
+}
+
+ul {
+    overflow: scroll;
+}
+
+.completed {
+    text-decoration: line-through;
+    opacity: 0.5;
+}
