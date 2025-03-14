@@ -3,8 +3,33 @@ import TodoItem from "./todoitem";
 import TodoList from "./todolist";
 import { formatRelative, compareAsc } from "date-fns";
 
-const myLists = [TodoList("General")];
-let currentList = myLists[0];
+const updateStorage = () => {
+    localStorage.myLists = JSON.stringify(myLists, (key, value) => value instanceof Array ? value : value.stringify());
+    localStorage.currentList = currentList ? currentList.stringify() : null;
+}
+
+const retrieveStorage = () => {
+    let myListsData = JSON.parse(localStorage.myLists);
+    let currentListData = JSON.parse(localStorage.currentList);
+
+    let lists = []
+    myListsData.forEach((obj) => {
+        let listData = JSON.parse(obj);
+        let list = TodoList(listData.name);
+        listData.items.forEach((item) => {
+            let todoData = JSON.parse(item)
+            let todo = TodoItem(todoData.title, todoData.description, todoData.dueDate, todoData.priority, list, todoData.completed);
+            list.addItem(todo);
+        })
+        lists.push(list)
+    });
+
+    return [lists, lists.find((list) => list.getName() === currentListData.name)]
+}
+let storedValues = localStorage.length === 0 ? null : retrieveStorage();
+
+const myLists = storedValues ? storedValues[0] : [TodoList("General")];
+let currentList = storedValues ? storedValues[1] : myLists[0];
 
 const body = document.body;
 const newListButton = document.getElementById('new-list');
@@ -56,6 +81,7 @@ const listPopup = (oldList) => {
                 let newList = TodoList(listName);
                 myLists.push(newList);
                 currentList = newList;
+                updateStorage();
             }
             body.removeChild(backdrop);
             body.removeChild(popup);
@@ -74,6 +100,7 @@ const listPopup = (oldList) => {
             let newListName = Object.fromEntries(formData)['name'];
             if (newListName && !myLists.map((list) => list.getName()).includes(newListName)) {
                 oldList.setName(newListName);
+                updateStorage();
             }
             body.removeChild(backdrop);
             body.removeChild(popup);
@@ -200,6 +227,7 @@ const todoPopup = (oldTodo) => {
                 let todo = TodoItem(todoTitle, todoDescription, todoDate, todoPriority, todoList);
                 todoList.addItem(todo);
                 currentList = todoList;
+                updateStorage();
             }
             body.removeChild(backdrop);
             body.removeChild(popup);
@@ -236,6 +264,7 @@ const todoPopup = (oldTodo) => {
                     todoList.addItem(todo);
                 }
                 currentList = todoList;
+                updateStorage();
             }
             body.removeChild(backdrop);
             body.removeChild(popup);
@@ -333,6 +362,7 @@ const displayTodos = () => {
 }
 displayTodos();
 
+// display a list's todos
 ulLists.addEventListener("click", (event) => {
     if (event.target.matches("li")) {
         let listName  = event.target.textContent;
@@ -341,6 +371,7 @@ ulLists.addEventListener("click", (event) => {
     }
 });
 
+// edit or delete list
 ulLists.addEventListener("click", (event) => {
     if (event.target.matches("button")) {
         let listDiv = event.target.parentElement.parentElement;
@@ -353,6 +384,7 @@ ulLists.addEventListener("click", (event) => {
             
             if (myLists.length === 0) currentList = null;
             if (changeCurrent && myLists.length !== 0) currentList = myLists[0];
+            updateStorage();
             displayLists();
             displayTodos();
         } else {
@@ -361,6 +393,7 @@ ulLists.addEventListener("click", (event) => {
     }
 });
 
+/// edit or delete todo
 ulTodos.addEventListener("click", (event) => {
     if (event.target.matches("button")) {
         let todoDiv = event.target.parentElement.previousSibling;
@@ -368,6 +401,7 @@ ulTodos.addEventListener("click", (event) => {
         let todo = currentList.getItems().find((todo) => todo.getTitle() === todoTitle);
         if (event.target.textContent === "Delete") {
             currentList.removeItem(todo);
+            updateStorage();
             displayTodos();
         } else {
             todoPopup(todo);
@@ -375,6 +409,7 @@ ulTodos.addEventListener("click", (event) => {
     }
 });
 
+// complete/check off todo
 ulTodos.addEventListener("change", (event) => {
     if (event.target.matches("input")) {
         let todoListName = event.target.parentElement.parentElement.parentElement.querySelector('h1').textContent;
@@ -383,6 +418,7 @@ ulTodos.addEventListener("change", (event) => {
         let todoTitle = todoDiv.querySelector('h3').textContent;
         let todo = todoList.getItems().find((todo) => todo.getTitle() === todoTitle);
         todo.toggleCompleted();
+        updateStorage();
         displayTodos();
     }
 });
